@@ -9,10 +9,6 @@ nodes
 [OSEv3:vars]
 #custom
 containerized=true
-openshift_hosted_logging_hostname="k-node-1.dm.com"
-openshift_hosted_logging_elasticsearch_cluster_size="1"
-openshift_hosted_logging_master_public_url="https://k-node-1.dm.com:8443"
-openshift_hosted_logging_image_prefix="registry.access.redhat.com/openshift3/"
 
 # SSH user, this user should allow ssh based auth without requiring a
 # password. If using ssh key based auth, then the key should be managed by an
@@ -109,7 +105,7 @@ openshift_master_logging_public_url=https://k-node-1.dm.com
 # htpasswd auth
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
 # Defining htpasswd users
-#openshift_master_htpasswd_users={'user1': '<pre-hashed password>', 'user2': '<pre-hashed password>'}
+openshift_master_htpasswd_users={'admin': '$apr1$dB7xgoov$Z5MrKu0vFkdHUTKopvM900'}
 # or
 #openshift_master_htpasswd_file=<path to local pre-generated htpasswd file>
 
@@ -535,10 +531,11 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 
 # host group for masters
 [masters]
-k-node-1.dm.com
+k-node-1.dm.com openshift_node_labels="{'region': 'infra'}"
 
 # NOTE: Currently we require that masters be part of the SDN which requires that they also be nodes
 # However, in order to ensure that your masters are not burdened with running pods you should
 # make them unschedulable by adding openshift_schedulable=False any node that's also a master.
 [nodes]
-k-node-[1:2].dm.com openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
+k-node-1.dm.com openshift_schedulable=True
+k-node-[2:3].dm.com openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
